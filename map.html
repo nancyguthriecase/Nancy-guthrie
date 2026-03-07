@@ -265,6 +265,9 @@
     <label class="lyr"><input type="radio" name="bm" value="satellite"> Satellite</label>
     <label class="lyr"><input type="radio" name="bm" value="esritopo"> ESRI Topo</label>
     <label class="lyr"><input type="radio" name="bm" value="dark"> Dark</label>
+    <label class="lyr"><input type="radio" name="bm" value="gmaps"> Google Maps</label>
+    <label class="lyr"><input type="radio" name="bm" value="ghybrid"> Google Hybrid</label>
+    <a id="openGmaps" href="#" target="_blank" rel="noopener" style="display:block;margin-top:6px;font-size:10px;color:var(--link);opacity:.7;letter-spacing:.3px;text-decoration:none;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='.7'">&#x1F310; Open current view in Google Maps</a>
   </div>
 
   <div class="sec">
@@ -543,6 +546,10 @@ const tiles = {
     attribution:'&copy; Esri', maxZoom:19 }),
   dark: L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
     attribution:'&copy; CartoDB', maxZoom:19 }),
+  gmaps: L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+    attribution:'&copy; Google Maps', maxZoom:20 }),
+  ghybrid: L.tileLayer('https://mt1.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+    attribution:'&copy; Google Maps', maxZoom:20 }),
 };
 tiles.streets.addTo(map);
 
@@ -1475,6 +1482,15 @@ document.querySelectorAll('input[name="bm"]').forEach(radio => {
     activeBM.addTo(map);
   });
 });
+
+// "Open in Google Maps" link — stays in sync with current view
+const gmapsLink = document.getElementById('openGmaps');
+function updateGmapsLink() {
+  const c = map.getCenter(), z = map.getZoom();
+  gmapsLink.href = `https://www.google.com/maps/@${c.lat},${c.lng},${z}z`;
+}
+map.on('moveend zoomend', updateGmapsLink);
+updateGmapsLink();
 
 // =============================================================
 // LAYER TOGGLES
