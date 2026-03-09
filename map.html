@@ -272,19 +272,21 @@
 
   <div class="sec">
     <h3>Data Layers</h3>
-    <label class="lyr"><input type="checkbox" data-layer="routes" checked> Major Routes <span class="cnt" id="cnt-routes">-</span></label>
-    <label class="lyr"><input type="checkbox" data-layer="cameras" checked> Traffic Cameras <span class="cnt" id="cnt-cameras">-</span></label>
+    <label class="lyr"><input type="checkbox" data-layer="routes"> Major Routes <span class="cnt" id="cnt-routes">-</span></label>
+    <label class="lyr"><input type="checkbox" data-layer="cameras"> Traffic Cameras <span class="cnt" id="cnt-cameras">-</span></label>
     <label class="lyr"><input type="checkbox" data-layer="mines"> Mines &amp; Shafts <span class="cnt" id="cnt-mines">-</span></label>
-    <label class="lyr"><input type="checkbox" data-layer="towers" checked> Cell Towers <span class="cnt" id="cnt-towers">-</span></label>
+    <label class="lyr"><input type="checkbox" data-layer="towers"> Cell Towers <span class="cnt" id="cnt-towers">-</span></label>
     <label class="lyr"><input type="checkbox" data-layer="trailheads"> Trailheads <span class="cnt" id="cnt-trailheads">-</span></label>
     <label class="lyr"><input type="checkbox" data-layer="silos"> Titan II Silos <span class="cnt" id="cnt-silos">18</span></label>
     <label class="lyr"><input type="checkbox" data-layer="water"> Water Features <span class="cnt" id="cnt-water">-</span></label>
     <label class="lyr"><input type="checkbox" data-layer="watersheds"> Washes &amp; Watersheds <span class="cnt" id="cnt-watersheds">-</span></label>
     <label class="lyr"><input type="checkbox" data-layer="aircraft"> Aircraft (ADS-B) <span class="cnt" id="cnt-aircraft">-</span></label>
     <label class="lyr"><input type="checkbox" data-layer="stormDrains"> Storm Drains <span class="cnt" id="cnt-stormDrains">-</span></label>
+    <label class="lyr"><input type="checkbox" data-layer="railroads"> &#x1f682; Railroads <span class="cnt" id="cnt-railroads">-</span></label>
     <label class="lyr"><input type="checkbox" data-layer="hillshade"> Terrain Hillshade</label>
     <label class="lyr" style="margin-top:6px;border-top:1px solid var(--border);padding-top:6px;"><input type="checkbox" data-layer="escapeRoute"> &#x26a0; WB I-10 Escape Corridor</label>
     <label class="lyr"><input type="checkbox" data-layer="jammerZone"> &#x1f4f5; WiFi Jammer Disruption Zone</label>
+    <label class="lyr"><input type="checkbox" data-layer="tpdDivisions"> &#x1f6a8; TPD Divisions</label>
     <div class="legend" style="margin-top:8px;">
       <span class="legend-item"><span class="legend-dot" style="background:#f39c12;"></span> Mine</span>
       <span class="legend-item"><span class="legend-dot" style="background:#3498db;width:5px;height:11px;border-radius:2px;"></span> Tower</span>
@@ -324,8 +326,8 @@
     </div>
     <button class="btn" onclick="runDriveTime()" id="btn-drivetime">Calculate Drive-Time Radius</button>
     <button class="btn" onclick="clearDriveTime()">Clear Drive-Time Layers</button>
-    <label class="lyr" style="margin-top:6px;"><input type="checkbox" data-layer="maxReach" checked> Max Road-Reach Circle</label>
-    <label class="lyr"><input type="checkbox" data-layer="camOnRoute" checked> &#x1f4f7; Cameras on Routes <span class="cnt" id="cnt-cam-route">-</span></label>
+    <label class="lyr" style="margin-top:6px;"><input type="checkbox" data-layer="maxReach"> Max Road-Reach Circle</label>
+    <label class="lyr"><input type="checkbox" data-layer="camOnRoute"> &#x1f4f7; Cameras on Routes <span class="cnt" id="cnt-cam-route">-</span></label>
     <div id="dt-status" style="font-size:11px;color:var(--dim);margin-top:6px;"></div>
     <div id="dt-results" style="font-size:11px;margin-top:6px;max-height:250px;overflow-y:auto;line-height:1.6;"></div>
   </div>
@@ -373,9 +375,9 @@
     <button class="btn" onclick="generateScenario()">&#x1f3b2; Generate Route</button>
     <button class="btn" onclick="batchGenerateScenarios()">&#x1f525; Batch Generate (heatmap)</button>
     <button class="btn" onclick="clearScenarios()">&#x1f5d1; Clear Scenarios</button>
-    <label class="lyr" style="margin-top:6px;"><input type="checkbox" data-layer="rsgRoutes" checked> Scenario Routes <span class="cnt" id="cnt-rsg-routes">-</span></label>
-    <label class="lyr"><input type="checkbox" data-layer="rsgCams" checked> Cameras on Scenarios <span class="cnt" id="cnt-rsg-cams">-</span></label>
-    <label class="lyr"><input type="checkbox" data-layer="rsgPOI" checked> Points of Interest <span class="cnt" id="cnt-rsg-poi">-</span></label>
+    <label class="lyr" style="margin-top:6px;"><input type="checkbox" data-layer="rsgRoutes"> Scenario Routes <span class="cnt" id="cnt-rsg-routes">-</span></label>
+    <label class="lyr"><input type="checkbox" data-layer="rsgCams"> Cameras on Scenarios <span class="cnt" id="cnt-rsg-cams">-</span></label>
+    <label class="lyr"><input type="checkbox" data-layer="rsgPOI"> Points of Interest <span class="cnt" id="cnt-rsg-poi">-</span></label>
     <div id="rsg-status" style="font-size:11px;color:var(--dim);margin-top:6px;"></div>
     <div id="rsg-results" style="font-size:11px;margin-top:6px;max-height:350px;overflow-y:auto;line-height:1.6;"></div>
   </div>
@@ -557,10 +559,10 @@ tiles.streets.addTo(map);
 // LAYER GROUPS
 // =============================================================
 const ly = {
-  routes:     L.layerGroup().addTo(map),
-  cameras:    L.layerGroup().addTo(map),
+  routes:     L.layerGroup(),
+  cameras:    L.layerGroup(),
   mines:      L.layerGroup(),
-  towers:     L.layerGroup().addTo(map),
+  towers:     L.layerGroup(),
   trailheads: L.layerGroup(),
   silos:      L.layerGroup(),
   water:      L.layerGroup(),
@@ -572,16 +574,18 @@ const ly = {
   measure:    L.layerGroup().addTo(map),
   isochrone:  L.layerGroup().addTo(map),
   routeTraces: L.layerGroup().addTo(map),
-  maxReach:   L.layerGroup().addTo(map),
-  camOnRoute: L.layerGroup().addTo(map),
+  maxReach:   L.layerGroup(),
+  camOnRoute: L.layerGroup(),
   watersheds:  L.layerGroup(),
   aircraft:    L.layerGroup(),
   stormDrains: L.layerGroup(),
   jammerZone:  L.layerGroup(),
   escapeRoute: L.layerGroup(),
-  rsgRoutes:  L.layerGroup().addTo(map),
-  rsgCams:    L.layerGroup().addTo(map),
-  rsgPOI:     L.layerGroup().addTo(map),
+  tpdDivisions: L.layerGroup(),
+  railroads:    L.layerGroup(),
+  rsgRoutes:  L.layerGroup(),
+  rsgCams:    L.layerGroup(),
+  rsgPOI:     L.layerGroup(),
 };
 
 // =============================================================
@@ -1333,6 +1337,132 @@ async function loadStormDrains() {
 }
 
 // =============================================================
+// TPD DIVISIONS (lazy-load from City of Tucson ArcGIS)
+// =============================================================
+let tpdDivisionsLoaded = false;
+const TPD_DIV_API = 'https://services3.arcgis.com/9coHY2fvuFjG9HQX/arcgis/rest/services/TPD_SECTORS/FeatureServer/0/query';
+const TPD_DIV_COLORS = {
+  'Operations Division East':    '#e74c3c',
+  'Operations Division Midtown': '#3498db',
+  'Operations Division South':   '#2ecc71',
+  'Operations Division West':    '#f39c12',
+};
+const TPD_DIV_SHORT = {
+  'Operations Division East':    'EAST',
+  'Operations Division Midtown': 'MIDTOWN',
+  'Operations Division South':   'SOUTH',
+  'Operations Division West':    'WEST',
+};
+
+async function loadTPDDivisions() {
+  if (tpdDivisionsLoaded) return;
+  try {
+    const url = `${TPD_DIV_API}?where=1%3D1&outFields=DIVISION&returnGeometry=true&outSR=4326&f=geojson`;
+    const resp = await fetch(url);
+    const geojson = await resp.json();
+
+    // Group sectors by division and merge into single polygons per division
+    const divFeatures = {};
+    geojson.features.forEach(f => {
+      const div = f.properties.DIVISION;
+      if (!divFeatures[div]) divFeatures[div] = [];
+      divFeatures[div].push(f);
+    });
+
+    // Add each division as a colored overlay + center label
+    Object.entries(divFeatures).forEach(([div, features]) => {
+      const color = TPD_DIV_COLORS[div] || '#888';
+      const label = TPD_DIV_SHORT[div] || div;
+
+      // Draw each sector polygon for this division
+      features.forEach(f => {
+        L.geoJSON(f, {
+          style: { color, weight: 2, opacity: 0.8, fillColor: color, fillOpacity: 0.08 }
+        }).addTo(ly.tpdDivisions);
+      });
+
+      // Compute rough center of all sectors for the label
+      let latSum = 0, lngSum = 0, n = 0;
+      features.forEach(f => {
+        const coords = f.geometry.type === 'MultiPolygon'
+          ? f.geometry.coordinates.flat(2)
+          : f.geometry.coordinates.flat(1);
+        coords.forEach(c => { lngSum += c[0]; latSum += c[1]; n++; });
+      });
+
+      if (n > 0) {
+        const divIcon = L.divIcon({
+          className: '',
+          html: `<div style="
+            font-size:13px;font-weight:800;color:${color};
+            text-shadow:0 0 4px rgba(0,0,0,.9),0 0 8px rgba(0,0,0,.7);
+            letter-spacing:2px;white-space:nowrap;pointer-events:none;
+            transform:translate(-50%,-50%);
+          ">${label}</div>`,
+          iconSize: [0, 0],
+        });
+        L.marker([latSum/n, lngSum/n], { icon: divIcon, interactive: false })
+          .addTo(ly.tpdDivisions);
+      }
+    });
+
+    tpdDivisionsLoaded = true;
+  } catch(e) {
+    console.error('TPD Divisions error:', e);
+  }
+}
+
+// =============================================================
+// RAILROADS (lazy-load from Overpass / OpenStreetMap)
+// =============================================================
+let railroadsLoaded = false;
+
+async function loadRailroads() {
+  if (railroadsLoaded) return;
+  setStatus('railroads','loading');
+  try {
+    const [lamin, lomin, lamax, lomax] = C.bboxWide.split(',').map(Number);
+    // Expand bbox for surrounding counties (Pinal, Santa Cruz, Cochise overlap)
+    const bbox = `${lamin - 0.15},${lomin - 0.15},${lamax + 0.15},${lomax + 0.15}`;
+    const query = `[out:json][timeout:30];(way["railway"="rail"](${bbox}););out geom;`;
+    const data = await overpass(query);
+    const railColors = {
+      main:  '#b45309',   // amber-700 for mainline
+      spur:  '#92400e',   // darker for spur/siding
+      yard:  '#78716c',   // gray for yard tracks
+    };
+    let count = 0;
+    data.elements.forEach(el => {
+      if (!el.geometry || el.geometry.length < 2) return;
+      const coords = el.geometry.map(g => [g.lat, g.lon]);
+      const tags = el.tags || {};
+      const service = tags.service || '';
+      const isYard = service === 'yard' || service === 'crossover';
+      const isSpur = service === 'spur' || service === 'siding' || service === 'industrial';
+      const color = isYard ? railColors.yard : isSpur ? railColors.spur : railColors.main;
+      const weight = isYard ? 1.5 : isSpur ? 2 : 3;
+      const name = tags.name || tags.operator || 'Railroad';
+      let popup = `<b style="color:${railColors.main};">&#x1F682; ${name}</b>`;
+      if (tags.operator && tags.operator !== name) popup += `<br>Operator: ${tags.operator}`;
+      if (service) popup += `<br>Type: ${service}`;
+      if (tags.maxspeed) popup += `<br>Speed: ${tags.maxspeed}`;
+      if (tags.usage) popup += `<br>Usage: ${tags.usage}`;
+      L.polyline(coords, {
+        color, weight, opacity: 0.8,
+        dashArray: isYard ? '4 4' : isSpur ? '6 3' : null,
+      }).bindPopup(popup).addTo(ly.railroads);
+      count++;
+    });
+    railroadsLoaded = true;
+    document.getElementById('cnt-railroads').textContent = count.toLocaleString();
+    setStatus('railroads','loaded',`(${count.toLocaleString()})`);
+  } catch(e) {
+    console.error('Railroads error:', e);
+    setStatus('railroads','error',e.message);
+  }
+}
+
+// =============================================================
 // LOAD: CAMERAS — ADOT highway cams (authoritative) + Overpass OSM (supplemental)
 // =============================================================
 function addADOTMarker(cam) {
@@ -1503,6 +1633,8 @@ document.querySelectorAll('[data-layer]').forEach(cb => {
       map.addLayer(layer);
       if (cb.dataset.layer === 'aircraft' && !aircraftLoaded) loadAircraft();
       if (cb.dataset.layer === 'stormDrains' && !stormDrainsLoaded) loadStormDrains();
+      if (cb.dataset.layer === 'tpdDivisions' && !tpdDivisionsLoaded) loadTPDDivisions();
+      if (cb.dataset.layer === 'railroads' && !railroadsLoaded) loadRailroads();
     } else { map.removeLayer(layer); }
   });
 });
